@@ -2,6 +2,7 @@ import {pool} from '../database/dataConfig'
 import { randomUUID } from 'node:crypto'
 import type { User } from '../interface/userInterface'
 
+
 export async function findUserByEmail(email: string){
     const result = await pool.query(
         `SELECT * FROM users WHERE email = $1`
