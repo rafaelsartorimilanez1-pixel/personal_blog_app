@@ -3,8 +3,6 @@ import bcrypt from 'bcrypt'
 import { CreateUserRepository, findUserByEmail } from "../repository/userRepository";
 import type { User } from '../interface/userInterface';
 
-
-
 export async function createUserService(data:User){
 
         const {name, email, password} = data

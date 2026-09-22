@@ -1,6 +1,6 @@
 import type { User } from "../interface/userInterface"
 import {createUserService, loginUserService} from "../services/userService"
-import {response, type Request, type Response} from "express"
+import {type Request, type Response} from "express"
 
 export async function createUserController(req: Request, res: Response){
 
