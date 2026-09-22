@@ -1,12 +1,9 @@
 import bcrypt from 'bcrypt'
 
-import { CreateUserRepository, findAllUsersRepository, findUserByEmail } from "../repository/userRepository";
+import { CreateUserRepository, findUserByEmail } from "../repository/userRepository";
 import type { User } from '../interface/userInterface';
 
-// return all users in DB
-export async function getUsersService(){
-        return findAllUsersRepository();
-}
+
 
 export async function createUserService(data:User){
 
@@ -30,4 +27,28 @@ export async function createUserService(data:User){
         })
 
 
+}
+
+export async function loginUserService(data: User){
+
+        const {email, password} = data
+
+        if(!email || !password){
+                throw new Error("Preencha o email e a senha corretamente!")
+        }
+
+        const existingUser = await findUserByEmail(email)
+
+        if(!existingUser){
+                throw new Error(
+                        "Email ou senha errados!"
+                )
+        }
+
+        const passwordMatch = await bcrypt.compare(
+                password,
+                existingUser.password_hash
+        )
+
+        //Aqui vai a logica do token
 }

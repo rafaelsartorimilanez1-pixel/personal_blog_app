@@ -1,24 +1,6 @@
 import type { User } from "../interface/userInterface"
-import {createUserService, getUsersService} from "../services/userService"
-import type {Request, Response} from "express"
-
-export async function getAllUsersController(req: Request, res: Response): Promise<Response>{
-
-    try {
-        const users = await getUsersService()
-
-        return res.json(users)
-
-    } catch (error) {
-        
-        console.log(error)
-
-        return res.status(500).json({
-            error: "Erro ao buscar usuários"
-        })
-    }
-
-}
+import {createUserService, loginUserService} from "../services/userService"
+import {response, type Request, type Response} from "express"
 
 export async function createUserController(req: Request, res: Response){
 
@@ -33,4 +15,18 @@ export async function createUserController(req: Request, res: Response){
             error: error instanceof Error ? error.message : String(error)
         })
     }
+}
+
+export async function loginUserController(req: Request, res: Response){
+
+    try {
+        const loginData: User = req.body
+
+        const login = await loginUserService(loginData)
+
+        return res.status(200).json(login)
+    } catch (error) {
+        
+    }
+
 }

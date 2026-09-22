@@ -1,13 +1,6 @@
-import { Result } from 'pg'
 import {pool} from '../database/dataConfig'
 import { randomUUID } from 'node:crypto'
 import type { User } from '../interface/userInterface'
-
-export async function findAllUsersRepository(){
-    const result = await pool.query('SELECT id, name ,email FROM users')
-
-    return result.rows
-}
 
 export async function findUserByEmail(email: string){
     const result = await pool.query(
