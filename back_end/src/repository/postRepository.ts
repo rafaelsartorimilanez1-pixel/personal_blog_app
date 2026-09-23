@@ -23,3 +23,35 @@ export async function createPostRepository(data: Post) {
 
     return result.rows[0]
 }
+
+export async function findPostById(id: string){
+
+    const result = await pool.query(
+        `
+            SELECT * FROM posts
+            WHERE id = $1
+        `, [id]
+    )
+
+    return result.rows
+}
+
+export async function updatePostRepository(idPost: string, data: Post ){
+
+    const {title, content, image_url} = data
+
+    const result = await pool.query(
+        `
+            UPDATE posts
+            SET
+                    title = $1,
+                    content = $2,
+                    image_url = $3
+            WHERE id = $4
+            RETURNING *
+        `,[title, content, image_url, idPost]
+    )
+
+    return result.rows[0]
+
+}
