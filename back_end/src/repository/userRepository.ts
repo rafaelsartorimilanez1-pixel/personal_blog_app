@@ -11,6 +11,21 @@ export async function findUserByEmail(email: string){
     return result.rows[0]
 }
 
+// export async function verifyUserID(user_id: string) {
+//     const result = await pool.query(
+//         `
+//         SELECT EXISTS (
+//             SELECT 1
+//             FROM users
+//             WHERE id = $1
+//         );
+//         `,
+//         [user_id]
+//     )
+
+//     return result.rows[0]
+// }
+
 export async function CreateUserRepository(data:User) {
     const post = await pool.query(
         `
