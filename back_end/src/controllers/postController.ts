@@ -1,12 +1,13 @@
 import {type Request, type Response} from "express"
-import { createPostService, getPostsService, updatePostService } from "../services/postService"
+import jwt from "jsonwebtoken"
+import { createPostService, deletePostService, getPostsService, updatePostService } from "../services/postService"
 import type { Post } from "../interface/postInterface"
 
 export async function getAllPostsController(req:Request, res:Response){
 
     try {
         
-        const posts = await getPostsService()
+        const posts = await getPostsService()   
 
         res.json(posts)
 
@@ -62,4 +63,31 @@ export function updatePostController(req: Request, res: Response){
         })
     }
 
+}
+
+export async function deletePostController(req: Request, res: Response){
+
+    try {
+        const { id } = req.params
+
+        if (typeof id !== "string") {
+            return res.status(400).json({
+                message: "ID da postagem inválido."
+            })
+        }
+
+        const userId = (req.user as jwt.JwtPayload).userId
+
+        await deletePostService(id, userId)
+
+        return res.status(200).json({
+            message: "Deletado com sucesso."
+        })
+
+    } catch (error) {
+        
+         return res.status(400).json({
+            message: "Não foi possivel deletar a postagem."
+        })
+    }
 }

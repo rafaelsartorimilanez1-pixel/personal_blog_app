@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt'
-
-import { CreateUserRepository, findUserByEmail } from "../repository/userRepository";
+import jwt from "jsonwebtoken"
+import { CreateUserRepository, deleteUserRepository, findUserByEmail, patchUserRepository, verifyUserID } from "../repository/userRepository";
 import type { User } from '../interface/userInterface';
+import { verifyAdminID } from '../repository/adminRepository';
 
 export async function createUserService(data:User){
 
@@ -24,7 +25,7 @@ export async function createUserService(data:User){
                 ...data, password: hashedPassword
         })
 
-
+        return user
 }
 
 export async function loginUserService(data: User){
@@ -48,5 +49,54 @@ export async function loginUserService(data: User){
                 existingUser.password_hash
         )
 
+        if(!passwordMatch){
+                throw new Error("Email ou senha errados!")
+        }
+
         //Aqui vai a logica do token
+        const token = jwt.sign(
+                {userId: existingUser.id},
+                process.env.JWT_SECRET as string,
+                { expiresIn: "1h"}
+        )
+
+        return { token }
+}
+
+export async function  deleteUserService(userId: string, adminId: string) {
+        
+        const verifyAdmin = verifyAdminID(adminId)
+
+        if(!verifyAdmin){
+                throw new Error("Apenas usuários autorizados podem realizar esta ação.")
+        }
+
+        const verifyUser = verifyUserID(userId)
+
+        if(!verifyUser){
+                throw new Error("Este usuário não pode ser deletado.")
+        }
+
+        return deleteUserRepository(userId)
+}
+
+export async function patchUserService(idUser: string, newDataUser: User) {
+
+    if (!idUser) {
+        throw new Error("ID do usuário não informado")
+    }
+
+    if (!newDataUser) {
+        throw new Error("Nenhum dado para atualizar")
+    }
+
+    const userExist = await verifyUserID(idUser)
+
+    if (!userExist.exists) {
+        throw new Error("Usuário não encontrado")
+    }
+
+    const userUpdated = await patchUserRepository(idUser, newDataUser)
+
+    return userUpdated
 }

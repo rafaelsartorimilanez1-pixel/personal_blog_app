@@ -1,7 +1,7 @@
 import type { Post } from "../interface/postInterface";
 import type { Response } from "express";
 import { verifyAdminID } from "../repository/adminRepository";
-import { createPostRepository, findPostById, getAllPostsRepository, updatePostRepository } from "../repository/postRepository";
+import { createPostRepository, deletePostRepository, findPostById, getAllPostsRepository, updatePostRepository } from "../repository/postRepository";
 
 export async function getPostsService() {
     
@@ -45,4 +45,23 @@ export async function updatePostService(data: Post, idPost: string){
     }
 
     return await updatePostRepository(idPost, data )
+}
+
+export async function deletePostService(idPost: string, userId: string) {
+    
+    const adminExist = await verifyAdminID(userId)
+
+    if(!adminExist){
+        throw new Error("Apenas usuários com permissão podem criar postagens")
+    }
+
+    const findPost = await findPostById(idPost)
+
+    if(!findPost.length || findPost[0].admin_id !== userId ){
+        throw new Error(
+            "Não é possivel editar esta postagem"
+        )
+    }
+
+    return await deletePostRepository(idPost)
 }

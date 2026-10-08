@@ -46,3 +46,16 @@ export async function patchCommentRepository(newContent: string, commentId: stri
 
     return result.rows[0]
 }
+
+export async function deleteCommentRepository(id:string) {
+    
+    const result = await pool.query(
+        `
+            DELETE FROM comments
+            WHERE id = $1
+            RETURNING *  
+        `, [id]
+    )
+
+    return result.rows[0]
+}

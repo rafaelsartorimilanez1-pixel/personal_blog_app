@@ -1,5 +1,6 @@
 import express from "express";
-import { createNewPostController, getAllPostsController, updatePostController } from "../controllers/postController";
+import { createNewPostController, deletePostController, getAllPostsController, updatePostController } from "../controllers/postController";
+import { authMiddleware } from "../middleware/authMiddleware";
 
 const router = express.Router()
 
@@ -7,9 +8,11 @@ const router = express.Router()
 router.get("/posts", getAllPostsController)
 
 // rota para criar um post
-router.post("/post", createNewPostController)
+router.post("/post", authMiddleware, createNewPostController)
 
 // rota para atualizar um post
-router.patch("/post/:id", updatePostController)
+router.patch("/post/:id", authMiddleware, updatePostController)
+
+router.delete("/post/:id", authMiddleware, deletePostController)
 
 export default router

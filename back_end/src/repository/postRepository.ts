@@ -55,3 +55,16 @@ export async function updatePostRepository(idPost: string, data: Post ){
     return result.rows[0]
 
 }
+
+export async function deletePostRepository(postId: string) {
+    const result = await pool.query(
+        `
+        DELETE FROM posts
+        WHERE id = $1
+        RETURNING *
+        `,
+        [postId]
+    )
+
+    return result.rows[0]
+}
