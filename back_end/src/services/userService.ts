@@ -3,6 +3,18 @@ import jwt from "jsonwebtoken"
 import { CreateUserRepository, deleteUserRepository, findUserByEmail, patchUserRepository, verifyUserID } from "../repository/userRepository";
 import type { User } from '../interface/userInterface';
 import { verifyAdminID } from '../repository/adminRepository';
+import axios from 'axios'
+
+export async function verifyEmail(email: string) {
+        const response = await axios.get("https://apilayer.net/api/check", {
+                params: {
+                        access_key: process.env.MAIL_API_KEY,
+                        email: email,
+                },
+        })
+
+        return response.data
+}
 
 export async function createUserService(data:User){
 
@@ -12,7 +24,16 @@ export async function createUserService(data:User){
                 throw new Error("Preencha os dados corretamente")
         } 
 
+        // const isEmailValid = await verifyEmail(email)
+
+        // if(
+        //         !isEmailValid.format_valid &&           
+        //         !isEmailValid.mx_found &&
+        //         !isEmailValid.smtp_check
+        // ) { throw new Error("Email está inválido")}
+
         const existingUser = await findUserByEmail(email)
+
         if(existingUser){
                 throw new Error(
                         "Usuário já cadastrado!"

@@ -6,11 +6,12 @@ import jwt from "jsonwebtoken"
 export async function createUserController(req: Request, res: Response){
 
     try {
-        const data: User = req.body
+        const data = req.body
 
-        const register = await createUserService(data)
+        await createUserService(data)
 
         return  res.status(201).json(data)
+        
     } catch (error) {
         return res.status(400).json({
             error: error instanceof Error ? error.message : String(error)
