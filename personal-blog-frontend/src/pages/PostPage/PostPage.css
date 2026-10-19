@@ -1,0 +1,34 @@
+.post-page h1{
+    font-size: 36px;
+    line-height: 1.3;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.post-page > small {
+    color: #888;
+    font-size: 13px;
+}
+
+.post-content {
+    margin: 32px 0 48px;
+    font-size: 17px;
+    line-height: 1.9;
+    color: #444;
+}
+
+.post-page section {
+    border-top: 1px solid #e5e2dc;
+    padding-top: 24px;
+}
+
+.post-page section h2 {
+    font-size: 22px;
+    margin-bottom: 16px;
+}
+
+@media (max-widht: 400px) {
+    .post-page h1{
+        font-size: 28px;
+    }
+}

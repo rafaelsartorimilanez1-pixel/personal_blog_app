@@ -1,0 +1,42 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+    border-bottom: 1px solid #e5e2dc;
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -1px;
+}
+
+header nav {
+    display: flex;
+    gap: 24px;
+}
+
+header nav a {
+    font-size: 14px;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+header nav a:hover{
+    color: #000;
+}
+
+@media (max-widht: 400px){
+    header{
+        padding: 20px 16px;
+        flex-wrap: wrap;
+        gap: 16px
+    }
+
+    header nav {
+        gap: 16px;
+    }
+}

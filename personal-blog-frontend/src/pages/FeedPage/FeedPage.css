@@ -1,0 +1,17 @@
+.feed-page h1{
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.feed-description {
+    color : #777;
+    font-size: 15px;
+    margin-bottom: 24px;
+}
+
+.posts-list{
+    display: flex;
+    flex-direction: column;
+}

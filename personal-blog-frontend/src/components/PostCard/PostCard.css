@@ -1,0 +1,31 @@
+.post-card {
+    padding: 28px 0;
+    border-bottom: 1px solid #e5e2dc;
+}
+
+.post-card h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 18px;
+}
+
+.post-card p {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.post-card small{
+    font-size: 12px;
+    color: #888;
+}
+
+.post-card h2 a {
+    transition: color 0.2s ease;
+}
+
+.post-card h2 a:hover {
+    color: #777;
+}
