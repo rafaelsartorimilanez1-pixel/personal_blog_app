@@ -20,6 +20,24 @@ export async function newCommentRepository(content: Comment, userId: string, pos
     return (await result).rows[0]
 }
 
+export async function getAllCommentsInPostRepository(id: string) {
+  const result = await pool.query(
+    `
+      SELECT
+        comments.*,
+        users.name AS user_name
+      FROM comments
+      LEFT JOIN users
+        ON comments.user_id = users.id
+      WHERE comments.post_id = $1
+      ORDER BY comments.created_at ASC
+    `,
+    [id]
+  );
+
+  return result.rows;
+}
+
 export async function findCommentById(id: string){
 
     const result = await pool.query(

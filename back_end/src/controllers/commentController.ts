@@ -1,8 +1,30 @@
 import {type Request, type Response} from "express"
 import jwt from 'jsonwebtoken'
-import { newCommentService, patchCommentService, deleteCommentService } from "../services/commentService"
+import { newCommentService, patchCommentService, deleteCommentService, getAllCommentsInPostService } from "../services/commentService"
 
-export function newCommentController(req: Request, res: Response){
+export async function getAllCommentsInPostController(req:Request, res:Response){
+
+    try{
+
+        const postId = req.params.postId
+
+        if (typeof postId !== "string") {
+            return res.status(400).json({ error: "ID do post invalido" })
+        }
+
+        const getComments = await getAllCommentsInPostService(postId)
+
+        res.json(getComments)
+
+    }catch (error) {
+
+        return res.status(400).json(
+            "Erro ao buscar comentários"
+        )
+    }
+}
+
+export async function newCommentController(req: Request, res: Response){
 
     try {
        const {content}= req.body 
@@ -11,7 +33,11 @@ export function newCommentController(req: Request, res: Response){
 
        const {postId} = req.params
 
-       const contentComment = newCommentService(content, userId, postId)
+       if (typeof postId !== "string" || typeof userId !== "string") {
+           return res.status(400).json({ error: "ID do post ou usuário inválido" })
+       }
+
+       const contentComment = await newCommentService(content, userId, postId)
 
        res.json(contentComment)
 
@@ -23,7 +49,7 @@ export function newCommentController(req: Request, res: Response){
     }
 }
 
-export function patchCommentController(req:Request, res:Response){
+export async function patchCommentController(req:Request, res:Response){
 
     try {
         const {newContent}= req.body 
@@ -32,9 +58,9 @@ export function patchCommentController(req:Request, res:Response){
 
         const {commentId} = req.params
 
-        const patchComment = patchCommentService(userId, newContent, commentId)
+        const patchComment = await patchCommentService(userId, newContent, commentId)
 
-        res.json(patchComment)
+        return res.json(patchComment)
     } catch (error) {
         
         return res.status(400).json({

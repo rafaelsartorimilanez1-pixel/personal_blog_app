@@ -9,6 +9,7 @@ export async function getAllPostsRepository() {
 
 }
 
+
 export async function createPostRepository(data: Post) {
 
     const {admin_id, content, image_url, title} = data
@@ -33,7 +34,7 @@ export async function findPostById(id: string){
         `, [id]
     )
 
-    return result.rows
+    return result.rows[0]
 }
 
 export async function updatePostRepository(idPost: string, data: Post ){

@@ -8,6 +8,17 @@ export async function getPostsService() {
     return await getAllPostsRepository();
 }
 
+export async function getPostByIdService(id: string) {
+    
+    const post = await findPostById(id)
+
+    if(!post){
+        throw new Error("Post não foi encontrado.")
+    }
+
+    return post
+}
+
 export async function createPostService(data: Post) {
     
     const {admin_id, title, content} = data
@@ -27,6 +38,7 @@ export async function createPostService(data: Post) {
 
     return post
 }
+
 
 export async function updatePostService(data: Post, idPost: string){
 

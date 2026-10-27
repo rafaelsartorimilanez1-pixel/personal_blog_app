@@ -1,8 +1,21 @@
 import type { Comment } from "../interface/commentInterface";
 import { verifyAdminID } from "../repository/adminRepository";
-import { findCommentById, newCommentRepository, patchCommentRepository, deleteCommentRepository } from "../repository/commentRepository";
+import { findCommentById, newCommentRepository, patchCommentRepository, deleteCommentRepository, getAllCommentsInPostRepository } from "../repository/commentRepository";
 import { findPostById } from "../repository/postRepository";
 
+
+export async function getAllCommentsInPostService(postId: string){
+
+    const post = findPostById(postId)
+
+    if(!post){
+        throw new Error("Não foi possivel encontrar a postagem")
+    }
+
+    const getComments = await getAllCommentsInPostRepository(postId)
+
+    return getComments
+}
 
 export function newCommentService(content: Comment, userId: string, postId: any){
 
@@ -27,11 +40,13 @@ export function newCommentService(content: Comment, userId: string, postId: any)
 export async function patchCommentService(userId: string, newContent: string, commentId: any) {
     
     //verifica se comentário existe
-    const comments = findCommentById(commentId)
+    const comments = await findCommentById(commentId)
 
-    if(!comments){
+    if(!comments || comments.length === 0){
         throw new Error("Comentário não encontrado")
     }
+
+    const isOwner = comments[0].user_id === userId;
 
      if(!newContent){
          throw new Error("adicione um comentario valido")

@@ -1,6 +1,6 @@
 import {type Request, type Response} from "express"
 import jwt from "jsonwebtoken"
-import { createPostService, deletePostService, getPostsService, updatePostService } from "../services/postService"
+import { createPostService, deletePostService, getPostByIdService, getPostsService, updatePostService } from "../services/postService"
 import type { Post } from "../interface/postInterface"
 
 export async function getAllPostsController(req:Request, res:Response){
@@ -13,8 +13,31 @@ export async function getAllPostsController(req:Request, res:Response){
 
     } catch (error) {
         
+        console.error(error);
+
         return res.status(500).json({
-            error: 'Erro ao buscar posts'
+            error: "Erro ao buscar posts"
+        });
+    }
+}
+
+export async function getPostByIdController(req:Request, res: Response) {
+    
+    try {
+        const { id }= req.params
+
+        if (typeof id !== "string") {
+            return res.status(400).json({
+                message: "ID da postagem inválido."
+            })
+        }
+
+    const post = await getPostByIdService(id)
+
+    return res.status(200).json(post)
+    } catch (error) {
+        return res.status(400).json({
+            message: "Não foi possivel procurar a postagem."
         })
     }
 }
