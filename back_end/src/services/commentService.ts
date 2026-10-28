@@ -69,7 +69,7 @@ export async function deleteCommentService(id: string, userId: string){
     const isAdmin = verifyAdminID(userId)
     const isOwner = comments[0].user_id === userId
 
-    if(!isAdmin || !isOwner){
+    if(!isAdmin && !isOwner){
         throw new Error("Você não tem permissão para deletar este comentário.")
     }
     return await deleteCommentRepository(id)

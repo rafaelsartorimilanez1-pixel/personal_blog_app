@@ -2,8 +2,13 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getPostById } from "../../services/postService";
 import "./PostPage.css";
-import { getComments } from "../../services/commentService";
+import {
+  getComments,
+  updateComment,
+  deleteComment,
+} from "../../services/commentService";
 import CommentForm from "../../components/CommentForm/CommentForm";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Post {
   id: string;
@@ -23,6 +28,7 @@ interface Comment {
 
 function PostPage() {
   const { id } = useParams();
+  const { userId } = useAuth();
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,6 +37,10 @@ function PostPage() {
   const [comment, setComment] = useState<Comment[]>([]);
   const [commentLoading, setCommentLoading] = useState(true);
   const [commentError, setCommentsError] = useState("");
+
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState("");
+  const [editError, setEditError] = useState("");
 
   useEffect(() => {
     async function fetchPost() {
@@ -63,6 +73,41 @@ function PostPage() {
       setCommentsError("Não foi possivel carregar os comentários.");
     } finally {
       setCommentLoading(false);
+    }
+  }
+
+  async function handleUpdateComment(commentId: string) {
+    if (!editedContent.trim()) {
+      setEditError("O comentário não pode ficar vázio.");
+      return;
+    }
+
+    try {
+      setEditError("");
+
+      await updateComment(commentId, editedContent.trim());
+
+      setEditingCommentId(null);
+      setEditedContent("");
+
+      await fetchComments();
+    } catch (error) {
+      setEditError("Não foi possível atualizar o comentário.");
+    }
+  }
+
+  async function handleDeleteComment(commentId: string) {
+    const confirmed = window.confirm(
+      "Tem certeza que desa excluir este comentário?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteComment(commentId);
+      await fetchComments();
+    } catch {
+      setCommentsError("Não foi possível excluir o comentário.");
     }
   }
 
@@ -99,25 +144,70 @@ function PostPage() {
 
         <CommentForm postId={id!} onCommentCreated={fetchComments} />
 
-        {commentLoading ? (
-          <p>Carregando comentários...</p>
-        ) : commentError ? (
-          <p>{commentError}</p>
-        ) : comment.length === 0 ? (
-          <p>Esta publicação ainda não possui comentários.</p>
-        ) : (
-          comment.map((comment) => (
+        {comment.map((comment) => {
+          const isOwner = comment.user_id === userId;
+
+          return (
             <article key={comment.id}>
               <strong>{comment.user_name ?? "Usuário desconhecido"}</strong>
 
-              <p>{comment.content}</p>
+              {editingCommentId === comment.id ? (
+                <>
+                  <textarea
+                    value={editedContent}
+                    onChange={(event) => setEditedContent(event.target.value)}
+                    rows={3}
+                  />
 
-              <small>
-                {new Date(comment.created_at).toLocaleDateString("pt-BR")}
-              </small>
+                  {editError && <p>{editError}</p>}
+
+                  <button onClick={() => handleUpdateComment(comment.id)}>
+                    Salvar
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setEditingCommentId(null);
+                      setEditedContent("");
+                      setEditError("");
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p>{comment.content}</p>
+
+                  <small>
+                    {new Date(comment.created_at).toLocaleDateString("pt-BR")}
+                  </small>
+
+                  {isOwner && (
+                    <button
+                      onClick={() => {
+                        setEditingCommentId(comment.id);
+                        setEditedContent(comment.content);
+                        setEditError("");
+                      }}
+                    >
+                      Editar
+                    </button>
+                  )}
+
+                  {isOwner && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      Excluir
+                    </button>
+                  )}
+                </>
+              )}
             </article>
-          ))
-        )}
+          );
+        })}
       </section>
     </article>
   );

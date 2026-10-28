@@ -13,3 +13,20 @@ export async function createComment(postId: string, content: string){
 
     return response.data
 }
+
+export async function updateComment(
+    commentId: string,
+    newContent: string
+) {
+   const response = await api.patch(`/posts/comments/${commentId}`, {
+    newContent,
+   }) 
+
+   return response.data
+}
+
+export async function deleteComment(commentId: string){
+    const response = await api.delete(`/posts/comments/${commentId}`)
+
+    return response.data
+}

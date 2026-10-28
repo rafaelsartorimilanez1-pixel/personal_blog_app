@@ -69,7 +69,7 @@ export async function patchCommentController(req:Request, res:Response){
     }
 }
 
-export function deleteCommentController(req: Request, res: Response){
+export async function deleteCommentController(req: Request, res: Response){
 
     try {
         const commentId = req.params.commentId
@@ -80,7 +80,7 @@ export function deleteCommentController(req: Request, res: Response){
             return res.status(400).json({ error: "ID do comentario invalido" })
         }
 
-        deleteCommentService(commentId, userId);
+        await deleteCommentService(commentId, userId);
 
         return res.json({
             message : "comentario deletado com sucesso!"
