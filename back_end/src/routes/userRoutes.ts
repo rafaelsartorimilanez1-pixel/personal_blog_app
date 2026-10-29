@@ -3,6 +3,7 @@ import {createUserController, deleteUserController, loginUserController, patchUs
 import express from 'express'
 import { authMiddleware } from "../middleware/authMiddleware";
 import { adminMiddleware } from "../middleware/adminMiddleware";
+import { getAdminStatusController } from "../controllers/adminController";
 
 const router = express.Router();
 
@@ -15,5 +16,7 @@ router.post('/users/login', loginUserController)
 router.patch('/user', authMiddleware, adminMiddleware, patchUserController)
 
 router.delete('/user', authMiddleware, adminMiddleware, deleteUserController)
+
+router.get("/admin/status", authMiddleware, getAdminStatusController)
 
 export default router

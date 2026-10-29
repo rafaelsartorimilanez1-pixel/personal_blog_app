@@ -32,3 +32,103 @@
         font-size: 28px;
     }
 }
+
+
+/* Lista de comentários */
+.post-page section {
+  border-top: 1px solid #e5e2dc;
+  padding-top: 24px;
+}
+
+.post-page section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* Cartão de cada comentário */
+.comment-card {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid #e5e2dc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* Nome do autor */
+.comment-author {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #252525;
+}
+
+/* Texto */
+.comment-content {
+  margin: 0 0 12px;
+  color: #444;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* Data */
+.comment-date {
+  display: block;
+  margin-bottom: 12px;
+  color: #888;
+  font-size: 12px;
+}
+
+/* Campo de edição */
+.comment-card textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #d8d4cd;
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+
+.comment-card textarea:focus {
+  outline: none;
+  border-color: #777;
+}
+
+/* Botões */
+.comment-button {
+  margin: 4px 8px 4px 0;
+  padding: 7px 12px;
+  border: 1px solid #d8d4cd;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.comment-button:hover {
+  background-color: #f0eee9;
+}
+
+.comment-delete {
+  color: #a33333;
+  border-color: #e4caca;
+}
+
+.comment-delete:hover {
+  background-color: #f8eaea;
+}
+
+/* Responsividade */
+@media (max-width: 400px) {
+  .post-page h1 {
+    font-size: 28px;
+  }
+
+  .comment-card {
+    padding: 12px;
+  }
+}

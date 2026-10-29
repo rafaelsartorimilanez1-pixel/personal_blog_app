@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { getAdminStatus } from "../services/adminService";
 
 interface TokenPayload {
   userId: string;
@@ -8,12 +9,14 @@ interface TokenPayload {
 interface AuthContextType {
   token: string | null;
   userId: string | null;
+  isAdmin: boolean;
   setToken: (token: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
   userId: null,
+  isAdmin: false,
   setToken: () => {},
 });
 
@@ -21,6 +24,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setTokenState] = useState<string | null>(() => {
     return localStorage.getItem("token");
   });
+
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const userId = token
     ? (() => {
@@ -31,6 +36,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       })()
     : null;
+
+  useEffect(() => {
+    if (!token) {
+      setIsAdmin(false);
+      return;
+    }
+
+    getAdminStatus()
+      .then((result) => setIsAdmin(result))
+      .catch(() => setIsAdmin(false));
+  }, [token]);
 
   function saveToken(token: string | null) {
     setTokenState(token);
@@ -43,7 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ token, userId, setToken: saveToken }}>
+    <AuthContext.Provider
+      value={{ token, userId, isAdmin, setToken: saveToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

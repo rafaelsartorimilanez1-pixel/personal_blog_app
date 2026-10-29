@@ -28,7 +28,7 @@ interface Comment {
 
 function PostPage() {
   const { id } = useParams();
-  const { userId } = useAuth();
+  const { userId, isAdmin } = useAuth();
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -148,8 +148,10 @@ function PostPage() {
           const isOwner = comment.user_id === userId;
 
           return (
-            <article key={comment.id}>
-              <strong>{comment.user_name ?? "Usuário desconhecido"}</strong>
+            <article key={comment.id} className="comment-card">
+              <strong className="comment-author">
+                {comment.user_name ?? "Usuário desconhecido"}
+              </strong>
 
               {editingCommentId === comment.id ? (
                 <>
@@ -161,7 +163,10 @@ function PostPage() {
 
                   {editError && <p>{editError}</p>}
 
-                  <button onClick={() => handleUpdateComment(comment.id)}>
+                  <button
+                    onClick={() => handleUpdateComment(comment.id)}
+                    className="comment-button"
+                  >
                     Salvar
                   </button>
 
@@ -171,15 +176,16 @@ function PostPage() {
                       setEditedContent("");
                       setEditError("");
                     }}
+                    className="comment-button"
                   >
                     Cancelar
                   </button>
                 </>
               ) : (
                 <>
-                  <p>{comment.content}</p>
+                  <p className="comment-content">{comment.content}</p>
 
-                  <small>
+                  <small className="comment-date">
                     {new Date(comment.created_at).toLocaleDateString("pt-BR")}
                   </small>
 
@@ -190,14 +196,16 @@ function PostPage() {
                         setEditedContent(comment.content);
                         setEditError("");
                       }}
+                      className="comment-button"
                     >
                       Editar
                     </button>
                   )}
 
-                  {isOwner && (
+                  {(isOwner || isAdmin) && (
                     <button
                       type="button"
+                      className="comment-button comment-delete"
                       onClick={() => handleDeleteComment(comment.id)}
                     >
                       Excluir

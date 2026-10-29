@@ -9,7 +9,6 @@ function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +22,7 @@ function LoginPage() {
     try {
       if (isRegistering) {
         if (password !== confirmPassword) {
-          setError(" As senhas não coincidem.");
+          setError("As senhas não coincidem.");
           return;
         }
 
@@ -35,14 +34,13 @@ function LoginPage() {
         setError("");
       } else {
         const data = await loginUser({ email, password });
-
         setToken(data.token);
       }
-    } catch (error) {
+    } catch {
       setError(
         isRegistering
-          ? "Não foi possiven criar a conta. Verifique os dados"
-          : "Não foi possível entrar. Confira seu email e senha.",
+          ? "Não foi possível criar a conta. Verifique os dados."
+          : "Não foi possível entrar. Confira seu e-mail e senha.",
       );
     } finally {
       setLoading(false);
@@ -51,80 +49,104 @@ function LoginPage() {
 
   return (
     <section className="login-page">
-      <h1>{isRegistering ? "Criar conta" : "Entrar"}</h1>
-      <p>
-        {isRegistering
-          ? "Crie sua conta para participar das conversas"
-          : "Acesse sua conta para participar das conversas"}
-      </p>
+      <div className="login-card">
+        <h1 className="login-title">
+          {isRegistering ? "Criar conta" : "Entrar"}
+        </h1>
 
-      <form onSubmit={handleLogin}>
-        {isRegistering && (
-          <>
-            <label htmlFor="name">Nome</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              required
-            />
-          </>
-        )}
+        <p className="login-description">
+          {isRegistering
+            ? "Crie sua conta para participar das conversas."
+            : "Acesse sua conta para participar das conversas."}
+        </p>
 
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
+        <form className="login-form" onSubmit={handleLogin}>
+          {isRegistering && (
+            <>
+              <label className="login-label" htmlFor="name">
+                Nome
+              </label>
+              <input
+                className="login-input"
+                id="name"
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                autoComplete="name"
+                required
+              />
+            </>
+          )}
 
-        <label htmlFor="password">Senha</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+          <label className="login-label" htmlFor="email">
+            E-mail
+          </label>
+          <input
+            className="login-input"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="email"
+            required
+          />
 
-        {isRegistering && (
-          <>
-            <label htmlFor="confirmPassword">Confirmar senha</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              required
-            />
-          </>
-        )}
+          <label className="login-label" htmlFor="password">
+            Senha
+          </label>
+          <input
+            className="login-input"
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete={isRegistering ? "new-password" : "current-password"}
+            required
+          />
 
-        {error && <p role="alert">{error}</p>}
+          {isRegistering && (
+            <>
+              <label className="login-label" htmlFor="confirmPassword">
+                Confirmar senha
+              </label>
+              <input
+                className="login-input"
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                autoComplete="new-password"
+                required
+              />
+            </>
+          )}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Aguarde..." : isRegistering ? "Criar conta" : "Entrar"}
-        </button>
-      </form>
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
 
-      {isRegistering ? (
-        <p>
-          Já tem uma conta?{" "}
-          <button type="button" onClick={() => setIsRegistering(false)}>
-            Entrar
+          <button className="login-submit" type="submit" disabled={loading}>
+            {loading ? "Aguarde..." : isRegistering ? "Criar conta" : "Entrar"}
+          </button>
+        </form>
+
+        <p className="login-switch">
+          {isRegistering ? "Já tem uma conta? " : "Ainda não tem uma conta? "}
+
+          <button
+            className="login-switch-button"
+            type="button"
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+              setError("");
+            }}
+          >
+            {isRegistering ? "Entrar" : "Criar conta"}
           </button>
         </p>
-      ) : (
-        <p>
-          Ainda não tem uma conta?{" "}
-          <button type="button" onClick={() => setIsRegistering(true)}>
-            Criar conta
-          </button>
-        </p>
-      )}
+      </div>
     </section>
   );
 }
